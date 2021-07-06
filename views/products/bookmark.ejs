@@ -1,0 +1,173 @@
+<%- include("../partials/header") %>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+<!-- Breadcrumb Section Begin -->
+    <div class="breacrumb-section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="breadcrumb-text">
+                        <a href="/products"><i class="fas fa-home"></i> Home</a>
+                        <span>My Bookmarks</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- Breadcrumb Form Section Begin -->
+
+<div class="container">
+	<h1 class="index-h1">Bookmarked Products</h1>
+	<div class="row" style="display:flex; flex-wrap:wrap;">
+		<% if(bookmarkedProducts !=null){ %>
+			<% bookmarkedProducts.forEach(function(product){ %>
+				<div class="col-md-4 col-sm-6">
+					<div class="img-thumbnail img-fluid mt-3">
+						<div class="row">
+							<% if(product.imageF != ''){ %>
+								<div class="col-sm-6 text-center">
+									<img class="rounded img-fluid indexImages" src="<%= product.imageF %>" alt="Image of Foreign Product">
+									<i class="far fa-times-circle fa-2x mt-1"></i><p><%= product.productNameF %></p>
+								</div>
+							<% }else{ %>
+								<div class="col-sm-6 text-center">
+									<img class="rounded img-fluid indexImages" src="<%= product.productImagePathF %>" alt="Image of Foreign Product">
+									<i class="far fa-times-circle fa-2x mt-1"></i><p><%= product.productNameF %></p>
+								</div>
+							<% } %>
+							<% if(product.imageI != ''){ %>
+								<div class="col-sm-6 text-center ">
+									<img class="rounded img-fluid indexImages" src="<%= product.imageI %>" alt="Image of Indian Product">
+									<i class="far fa-check-circle fa-2x mt-1"></i><p><%= product.productNameI %></p>
+								</div>
+							<% }else{ %>
+								<div class="col-sm-6 text-center">
+									<img class="rounded img-fluid indexImages" src="<%= product.productImagePathI %>" alt="Image of Indian Product">
+									<i class="far fa-check-circle fa-2x mt-1"></i><p><%= product.productNameI %></p>
+								</div>
+							<% } %>
+						</div>
+						<div class="row">
+							<div class="col-md-6 ">
+								&nbsp;<i class="far fa-thumbs-up"></i>&nbsp;<span id="likes-count-<%= product._id %>"><%= product.likes %> </span>
+							</div>
+							<div class="col-md-6" style="text-align:right;">
+								<%= product.comments.length %>comments
+							</div>
+						</div>
+						<hr class="product-hr-90">
+						<div class="row text-center">
+							<div class="col-md-4">
+							<% if(currentUser){ %>
+								<button onclick="likeOnPost(event);" class="btn btn btn-light btn-sm"
+								data-post-id="<%= product._id %>">
+								<% if(product.likeStatus){ %>
+									Liked
+								<% }else{ %>
+									Like
+								<% } %>
+   		 		        		</button>
+							<% } else{ %>
+								<form method="GET" action="/login">
+									<button class="btn btn-light">Like</button>	
+								</form>
+							<% } %>	
+							</div>
+							<div class="col-md-4">
+								<% if(currentUser){ %>
+									<a class="btn btn-light btn-sm" href="/products/<%= product._id %>/comments/new">Comment</a>
+								<% } else{ %>
+									<a class="btn btn-light" href="/login">Comment</a>
+								<% } %>
+							</div>
+							<div class="col-md-4">
+								<span><a class="a2a_dd btn btn-light btn-sm" href="https://www.addtoany.com/share" data-a2a-url="https://rickypatelwebdevelopment.run-ap-south1.goorm.io/products/<%= product._id %>" data-a2a-title="Join us in making India 'AtmaNirbhar'. We have found the replacement of foreign product : <%= product.productNameF %> of brand : <%= product.brandF %>. Check out the link below.">Share</a></span>
+							</div>
+						</div>
+						<hr class="product-hr">
+						<figcaption class="figure-caption text-center"><h4><%= product.category %></h4></figcaption>
+						<div class="row mt-1 text-center">
+							<div class="col-md-6">
+								<a class="btn btn-outline-primary btn-sm" href="/products/<%= product._id %>">More Info</a>
+							</div>
+							<div class="col-md-6">
+								<% if(currentUser){ %>
+									<% for(var i =0; i<currentUser.bookmarkCollection.length; i++){ %>
+										<% if(String(currentUser.bookmarkCollection[i]) === String(product._id)){ %>
+											<% currentUser.bookmarkStatus = true; %>
+											<% break; %>
+										<% }else{ %>
+											<% currentUser.bookmarkStatus = false; %>
+										<% } %>
+									<% } %>
+									<button onclick="bookmarkOnPost(event);"  class="btn btn-sm btn-outline-primary border border-primary"
+									data-post-id="<%= product._id %>">
+									<% if(currentUser.bookmarkStatus){ %>
+										Bookmarked
+									<% }else{ %>
+										Bookmark
+									<% } %>            			
+									</button>
+								<% } else{ %>
+									<form action="/login" method="POST">
+										<button class="btn btn-sm btn-outline-primary border border-primary" type="submit">Bookmark</button>	
+									</form>
+								<% } %>
+							</div>
+						</div>
+					</div>
+				</div>
+			<% }) %>
+		<% } else{ %>
+			<h4>&nbsp; &nbsp;No Bookmarks to show</h4>
+		<% } %>
+	</div>
+</div>
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+        var toggleButtonText = {
+            Bookmark: function(button) {
+                button.textContent = "Bookmarked";
+            },
+            Bookmarked: function(button) {
+                button.textContent = "Bookmark";
+            }
+        };
+		var bookmarkOnPost = function (event) {
+			var postId = event.target.dataset.postId;
+            var action = event.target.textContent.trim();
+			console.log(action);
+            toggleButtonText[action](event.target);
+            axios.post('/products/' + postId + '/bookmark/'+action);
+		};
+	var updatePostStats = {
+            Like: function (postId) {
+                document.querySelector('#likes-count-' + postId).textContent++;		
+            },
+            Liked: function(postId) {
+                document.querySelector('#likes-count-' + postId).textContent--;
+            }
+        };
+		var toggleButtonTextLike = {
+            Like: function(button) {
+                button.textContent = "Liked";
+				button.classList.remove("btn-outline-primary");
+				button.classList.add("btn-primary");
+            },
+            Liked: function(button) {
+                button.textContent = "Like";
+				button.classList.remove("btn-primary");
+				button.classList.add("btn-outline-primary");
+            }
+        };
+		var likeOnPost = function (event) {
+			var postId = event.target.dataset.postId;
+			var action = event.target.textContent.trim();
+            toggleButtonTextLike[action](event.target);
+            updatePostStats[action](postId);
+            axios.post('/products/' + postId + '/like/'+action);
+		};
+</script>
+
+<%- include("../partials/footer") %>

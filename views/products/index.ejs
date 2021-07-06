@@ -1,0 +1,364 @@
+<%- include("../partials/header") %>
+<script async src="https://static.addtoany.com/menu/page.js"></script>
+
+	<header class="jumbotron">
+		<div class="jumbotron-text">
+			<h1 class="jumbotron-h1">Welcome to AatmaNirbhar-Bharat</h1>
+			<h5>Find replacements for all Foreign Products</h5>
+			<p><a class="btn btn-primary btn-large" href="/products/new">Add New Product</a></p>
+			<form action="/products" method="GET" class="form-inline justify-content-center">
+				<div class="input-group">
+					<input type="text" name="search" placeholder="Product Search...." class="form-control">
+					<button type="submit" class="btn btn-warning"><i class="fas fa-search"></i></button>
+					<!-- <input type="submit" value="Search" class="btn btn-default"> -->
+				</div>
+			</form>	
+		</div>
+	</header>
+
+<!-- Banner Section Begin -->
+    <div class="banner-section spad">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-lg-4">
+                    <div class="single-banner">
+							<img src="https://www.gopaisa.com/blog/wp-content/uploads/2017/08/Webp.net-resizeimage-15-710x503.jpg" alt="">
+                        <div class="inner-text">
+                            <h4>VOCAL</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="single-banner">
+                        <img src="https://www.gopaisa.com/blog/wp-content/uploads/2017/08/Webp.net-resizeimage-15-710x503.jpg" alt="">
+                        <div class="inner-text">
+                            <h4>FOR</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="single-banner">
+                        <img src="https://www.gopaisa.com/blog/wp-content/uploads/2017/08/Webp.net-resizeimage-15-710x503.jpg" alt="">
+                        <div class="inner-text">
+                            <h4>LOCAL</h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Banner Section End -->
+
+<div class="container">	
+	<% if(trendingProducts){ %>
+		<h1 class="index-h1">Trending Products</h1><hr>
+		<div class="row" style="display:flex; flex-wrap:wrap;">
+			<% trendingProducts.forEach(function(product){ %>
+				<div class="product-card col-md-4 col-sm-6">
+					<div class="img-thumbnail img-fluid mt-3">
+						<div class="row">
+							<% if(product.imageF != ''){ %>
+								<div class="col-sm-6 text-center">
+									<img class="rounded img-fluid indexImages" src="<%= product.imageF %>" alt="Image of Foreign Product">
+									<i class="far fa-times-circle fa-2x mt-1"></i><p><%= product.productNameF %></p>
+								</div>
+							<% }else{ %>
+								<div class="col-sm-6 text-center">
+									<img class="rounded img-fluid indexImages" src="<%= product.productImagePathF %>" alt="Image of Foreign Product">
+									<i class="far fa-times-circle fa-2x mt-1"></i><p><%= product.productNameF %></p>
+								</div>
+							<% } %>
+							<% if(product.imageI != ''){ %>
+								<div class="col-sm-6 text-center ">
+									<img class="rounded img-fluid indexImages" src="<%= product.imageI %>" alt="Image of Indian Product">
+									<i class="far fa-check-circle fa-2x mt-1"></i><p><%= product.productNameI %></p>
+								</div>
+							<% }else{ %>
+								<div class="col-sm-6 text-center">
+									<img class="rounded img-fluid indexImages" src="<%= product.productImagePathI %>" alt="Image of Indian Product">
+									<i class="far fa-check-circle fa-2x mt-1"></i><p><%= product.productNameI %></p>
+								</div>
+							<% } %>
+						</div>
+						<div class="row">
+							<div class="col-md-6 ">
+								&nbsp;<i class="far fa-thumbs-up"></i>&nbsp;<span id="like-count-<%= product._id %>"><%= product.likes %> </span>
+							</div>
+							<div class="col-md-6" style="text-align:right;">
+								<%= product.comments.length %>comments
+							</div>
+						</div>
+						<hr class="product-hr-90">
+						<div class="row text-center">
+							<div class="col-md-4">
+							<% if(currentUser){ %>
+								<% console.log(currentUser._id) %>
+								<button onclick="likeOnPost(event);" class="btn btn btn-light btn-sm"
+								data-post-id="<%= product._id %>">
+								<% var flag=0; %>
+									<% console.log(product.category) %>
+									<%  console.log(product.likedUsers.length) %>
+								<% for(var i=0; i<product.likedUsers.length; i++ ){ %>
+									<% console.log(product.likedUsers[i]) %>
+									<% if(String.valueOf(product.likedUsers[i]) === String.valueOf(currentUser._id)) { %>
+										Liked
+										
+									<% } %>
+								<% } %>	
+								<% if(flag != 1) { %>
+									Like	
+								<% } %>
+								</button>
+							<% } else{ %>
+								<form method="GET" action="/login">
+									<button class="btn btn-light">Like</button>	
+								</form>
+							<% } %>	
+							</div>
+							<div class="col-md-4">
+								<% if(currentUser){ %>
+									<a class="btn btn-light btn-sm" href="/products/<%= product._id %>/comments/new">Comment</a>
+								<% } else{ %>
+									<a class="btn btn-light" href="/login">Comment</a>
+								<% } %>
+							</div>
+							<div class="col-md-4">
+								<span><a class="a2a_dd btn btn-light btn-sm" href="https://www.addtoany.com/share" data-a2a-url="https://rickypatelwebdevelopment.run-ap-south1.goorm.io/products/<%= product._id %>" data-a2a-title="Join us in making India 'AtmaNirbhar'. We have found the replacement of this foreign product. Check out the link. Product : <%= product.name %>">Share</a></span>
+							</div>
+						</div>
+						<hr class="product-hr">
+						<figcaption class="figure-caption text-center"><h4><%= product.category %></h4></figcaption>
+						<div class="row mt-1 text-center">
+							<div class="col-md-6">
+								<a class="btn btn-outline-primary btn-sm" href="/products/<%= product._id %>">More Info</a>
+							</div>
+							<div class="col-md-6">
+								<% if(currentUser){ %>
+									<% for(var i =0; i<currentUser.bookmarkCollection.length; i++){ %>
+										<% if(String(currentUser.bookmarkCollection[i]) === String(product._id)){ %>
+											<% currentUser.bookmarkStatus = true; %>
+											<% break; %>
+										<% }else{ %>
+											<% currentUser.bookmarkStatus = false; %>
+										<% } %>
+									<% } %>
+									<button onclick="bookmarkOnPost(event);"  class="btn btn-sm btn-outline-primary border border-primary"
+									data-post-id="<%= product._id %>">
+									<% if(currentUser.bookmarkStatus){ %>
+										Bookmarked
+									<% }else{ %>
+										Bookmark
+									<% } %>            			
+									</button>
+								<% } else{ %>
+									<form action="/login" method="POST">
+										<button class="btn btn-sm btn-outline-primary border border-primary" type="submit">Bookmark</button>	
+									</form>
+								<% } %>
+							</div>
+						</div>
+						
+					</div>
+				</div>
+			<% }) %>
+		</div>
+	<% } %>
+
+	<hr><h1 class="index-h1">All Products</h1><hr>
+	<div class="row" style="display:flex; flex-wrap:wrap;">
+		<% products.forEach(function(product){ %>
+			<div class="col-md-4 col-sm-6">
+				<div class="img-thumbnail img-fluid mt-3">
+					<div class="row">
+						<% if(product.imageF != ''){ %>
+							<div class="col-sm-6 text-center">
+								<img class="rounded img-fluid indexImages" src="<%= product.imageF %>" alt="Image of Foreign Product">
+								<i class="far fa-times-circle fa-2x mt-1"></i><p><%= product.productNameF %></p>
+							</div>
+						<% }else{ %>
+							<div class="col-sm-6 text-center">
+								<img class="rounded img-fluid indexImages" src="<%= product.productImagePathF %>" alt="Image of Foreign Product">
+								<i class="far fa-times-circle fa-2x mt-1"></i><p><%= product.productNameF %></p>
+							</div>
+						<% } %>
+						<% if(product.imageI != ''){ %>
+							<div class="col-sm-6 text-center ">
+								<img class="rounded img-fluid indexImages" src="<%= product.imageI %>" alt="Image of Indian Product">
+								<i class="far fa-check-circle fa-2x mt-1"></i><p><%= product.productNameI %></p>
+							</div>
+						<% }else{ %>
+							<div class="col-sm-6 text-center">
+								<img class="rounded img-fluid indexImages" src="<%= product.productImagePathI %>" alt="Image of Indian Product">
+								<i class="far fa-check-circle fa-2x mt-1"></i><p><%= product.productNameI %></p>
+							</div>
+						<% } %>
+					</div>
+					<div class="row">
+						<div class="col-md-6">
+							&nbsp;<i class="far fa-thumbs-up"></i>&nbsp;<span id="likes-count-<%= product._id %>"><%= product.likes %> </span>
+						</div>
+						<div class="col-md-6" style="text-align:right;">
+							<%= product.comments.length %>comments
+						</div>
+					</div>
+					<hr class="product-hr-90">
+					<div class="row text-center">
+						<div class="col-md-4">
+						<% if(currentUser){ %>
+							<button onclick="likeOnPost(event);" class="btn btn btn-light btn-sm "
+							data-post-id="<%= product._id %>">
+							<% if(product.likeStatus){ %>
+								Liked
+							<% }else{ %>
+								Like
+							<% } %>
+	 		        		</button>
+						<% } else{ %>
+							<form method="GET" action="/login">
+								<button class="btn btn-light">Like</button>	
+							</form>
+						<% } %>	
+						</div>
+						<div class="col-md-4">
+							<% if(currentUser){ %>
+								<a class="btn btn-light btn-sm" href="/products/<%= product._id %>/comments/new">Comment</a>
+							<% } else{ %>
+								<a class="btn btn-light" href="/login">Comment</a>
+							<% } %>
+						</div>
+						<div class="col-md-4">
+							<span><a class="a2a_dd btn btn-light btn-sm" href="https://www.addtoany.com/share" data-a2a-url="https://rickypatelwebdevelopment.run-ap-south1.goorm.io/products/<%= product._id %>" data-a2a-title="Join us in making India 'AtmaNirbhar'. We have found the replacement of this foreign product. Check out the link. Product : <%= product.name %>">Share</a></span>
+						</div>
+					</div>
+					<hr class="product-hr">
+					<figcaption class="figure-caption text-center"><h4><%= product.category %></h4></figcaption>
+					<div class="row mt-1 text-center">
+						<div class="col-md-6">
+							<a class="btn btn-outline-primary btn-sm" href="/products/<%= product._id %>">More Info</a>
+						</div>
+						<div class="col-md-6">
+							<% if(currentUser){ %>
+								<% for(var i =0; i<currentUser.bookmarkCollection.length; i++){ %>
+									<% if(String(currentUser.bookmarkCollection[i]) === String(product._id)){ %>
+										<% currentUser.bookmarkStatus = true; %>
+										<% break; %>
+									<% }else{ %>
+										<% currentUser.bookmarkStatus = false; %>
+									<% } %>
+								<% } %>
+								<button onclick="bookmarkOnPost(event);"  class="btn btn-sm btn-outline-primary border border-primary"
+								data-post-id="<%= product._id %>">
+								<% if(currentUser.bookmarkStatus){ %>
+									Bookmarked
+								<% }else{ %>
+									Bookmark
+								<% } %>            			
+								</button>
+							<% } else{ %>
+								<form action="/login" method="POST">
+									<button class="btn btn-sm btn-outline-primary border border-primary" type="submit">Bookmark</button>	
+								</form>
+							<% } %>
+						</div>
+					</div>
+				</div>
+			</div>
+		<% }) %>
+	</div>
+	
+	<hr><h1 class="index-h1">Some Videos You might like to Watch</h1><hr>
+	<div class="row">
+		<div class="col-md-4 mb-3">
+			<div class="thumbnail">
+				<div class="video-container rounded">
+					<iframe width="560" height="315" src="https://www.youtube.com/embed/7Zt4fB1lwIo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+ 	 			</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-3">
+			<div class="thumbnail">
+				<div class="video-container rounded">
+ 	 				<iframe width="560" height="315" src="https://www.youtube.com/embed/ukPYkmdZK-o" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-3">
+			<div class="thumbnail">
+				<div class="video-container rounded">
+ 	 				<iframe width="560" height="315" src="https://www.youtube.com/embed/dfws1mZ56CY" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-3">
+			<div class="thumbnail">
+				<div class="video-container rounded">
+ 	 				<iframe width="560" height="315" src="https://www.youtube.com/embed/tuvAdo0dniw" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-4 mb-3">
+			<div class="thumbnail">
+				<div class="video-container rounded">
+ 	 				<iframe width="560" height="315" src="https://www.youtube.com/embed/nnVsWt2PC4w" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+        var toggleButtonText = {
+            Bookmark: function(button) {
+				button.textContent = "Bookmarked";
+				button.classList.remove("btn-outline-primary");
+				button.classList.add("btn-primary");
+				
+            },
+            Bookmarked: function(button) {
+				button.textContent = "Bookmark";
+				button.classList.remove("btn-primary");
+				button.classList.add("btn-outline-primary");
+				
+            }
+        };
+		var bookmarkOnPost = function (event) {
+			var postId = event.target.dataset.postId;
+            var action = event.target.textContent.trim();
+			toggleButtonText[action](event.target);
+            axios.post('/products/' + postId + '/bookmark/'+action);
+		};
+	
+		var updatePostStats = {
+            Like: function (postId) {
+                document.querySelector('#likes-count-' + postId).textContent++;
+				document.querySelector('#like-count-' + postId).textContent++;
+            },
+            Liked: function(postId) {
+                document.querySelector('#likes-count-' + postId).textContent--;
+				document.querySelector('#like-count-' + postId).textContent--;
+            }
+        };
+		var toggleButtonTextLike = {
+            Like: function(button) {
+                button.textContent = "Liked";
+				button.classList.remove("btn-outline-primary");
+				button.classList.add("btn-primary");
+            },
+            Liked: function(button) {
+                button.textContent = "Like";
+				button.classList.remove("btn-primary");
+				button.classList.add("btn-outline-primary");
+            }
+        };
+		var likeOnPost = function (event) {
+			var postId = event.target.dataset.postId;
+			var action = event.target.textContent.trim();
+            toggleButtonTextLike[action](event.target);
+            updatePostStats[action](postId);
+            axios.post('/products/' + postId + '/like/'+action);
+		};
+    </script>
+
+<%- include("../partials/footer") %>

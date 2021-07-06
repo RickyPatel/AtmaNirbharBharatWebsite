@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>AatmaNirbhar Bharat</title>
+		<meta property="og:title" content="Aatmanirbhar Bharat">
+		<meta property="og:image" content="">
+		<meta property="og:description" content="Welcome to Aatmanirbhar Bharat">
+		<meta property="og:url" content="https://aatmanirbharbharat.herokuapp.com/">
+		<meta name="twitter:card" content="">
+		<link rel="icon" href="https://img.icons8.com/color/50/000000/india.png">
+		
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.0-2/css/all.min.css">
+		<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+		<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+		 -->
+		<link rel="stylesheet" href="/stylesheets/main.css">
+		
+	</head>
+	<body>
+		
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" >
+		<div class="container-fluid">
+			<a class="navbar-brand" href="/">AtmaNirbhar <i class="fas fa-rupee-sign"></i></a>
+  				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+    			<span class="navbar-toggler-icon"></span>
+ 			</button>
+			<div class="collapse navbar-collapse" id="navbarNavDropdown">
+				<ul class="navbar-nav mr-auto">
+					<li class="nav-item">
+        				<a class="nav-link" href="/products">Home<span class="sr-only">(current)</span></a>
+      				</li>
+				</ul>
+				<ul class="navbar-nav ml-auto">
+					<% if(!currentUser){ %>
+						<li class="nav-item"><a class="nav-link" href="/login">My Bookmarks</a></li>
+						<li class="nav-item"><a class="nav-link" href="/register">Register</a></li>
+						<li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
+					<% }else{ %>
+						<li class="nav-item"><a class="nav-link" href="/products/<%= currentUser._id %>/bookmark">My Bookmarks</a></li>	
+						<li class="nav-item"><a class="nav-link" href="">Signed In As <%= currentUser.username %></a></li>
+						<li class="nav-item"><a class="nav-link" href="/logout">Log Out</a></li>
+					<% } %>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<% if(error && error.length>0){ %>
+				<div class="alert alert-danger" role="alert">
+					<%= error %>
+				</div>
+		<% } %>
+		<% if(success && success.length>0){ %>
+				<div class="alert alert-success" role="alert">
+					<%= success %>
+				</div>
+		<% } %>
+	</div>
+		
+	
+	
+	
+		 
